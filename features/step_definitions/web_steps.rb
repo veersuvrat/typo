@@ -55,6 +55,25 @@ And /^I am logged into the admin panel$/ do
   end
 end
 
+And /^I create two articles$/ do
+  page.should have_content('Welcome back, admin!')
+  click_link 'New Article'
+  fill_in 'article_title', :with => 'Good stuff 1'
+  fill_in "article__body_and_extended_editor", :with => 'Kim Kardashian'
+  click_button 'Publish'
+  click_link 'New Article'
+  fill_in 'article_title', :with => 'Good stuff 2'
+  fill_in "article__body_and_extended_editor", :with => 'Chitrangda Singh'
+  click_button 'Publish'
+  if page.respond_to? :should
+    page.should have_content('Good stuff 1')
+    page.should have_content('Good stuff 2')
+  else
+    assert page.has_content?('Good stuff 1')
+    assert page.has_content?('Good stuff 2')
+  end
+end
+
 # Single-line step scoper
 When /^(.*) within (.*[^:])$/ do |step, parent|
   with_scope(parent) { When step }
