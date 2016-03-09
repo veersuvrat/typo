@@ -145,19 +145,13 @@ class Article < Content
       flash[:notice] = "Invalid article ID #{id_two}"
       return
     end
-    new_article = Article.create
-    new_article.title = article_one.title
-    new_article.body = article_one.body + " " + article_two.body
-    new_article.author = article_one.author
-    new_article.published = true
-    new_article.set_published_at
-    new_article.state = "published"
-    Comment.where(article_id: article_one.id).find_each do |comm|
-      comm.article_id = new_article.id
+    article_one.body += " " + article_two.body
+    Comment.where(article_id: article_two.id).find_each do |comm|
+      comm.article_id = article_one.id
       comm.save
     end
-    new_article.save
-    return new_article
+    article_two.destroy
+    return self
   end
 
   def permalink_url_options(nesting = false)
