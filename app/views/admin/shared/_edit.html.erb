@@ -4,8 +4,9 @@
   <%= render :partial => "form" %>
 
 <% end %>
-<p>Adding the merge functionality here.</p>
 <% if current_user.admin? and not @article.id.nil? %>
+    <h3>Merge Articles</h3>
+    <p>Adding the merge functionality here.</p>
     <%= form_tag("/admin/content/merge/#{@article.id}", method: "post") do %>
         <%= text_field_tag("merge_with", "0830") %>
         <%= submit_tag("Merge With This Aricle") %>
