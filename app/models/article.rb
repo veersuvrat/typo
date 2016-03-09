@@ -150,6 +150,7 @@ class Article < Content
       comm.article_id = article_one.id
       comm.save
     end
+    article_one.save!
     article_two.destroy
     return self
   end
