@@ -27,6 +27,24 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge
+    id_one = params[:id]
+    id_two = params[:merge_with]
+    if id_one == id_two
+      flash[:error] = "Error, you are not allowed to merge articles with same ID."
+      redirect_to :action => 'index'
+      return
+    end
+    article = Article.find(id_one)
+    unless article.access_by? current_user
+      flash[:error] = "Error, you are not allowed to merge articles #{id_one} and #{id_two}. Check your permissions."
+      redirect_to :action => 'index'
+      return
+    end
+    article.merge_with(id_two)
+    redirect_to :action => 'index'
+  end
+
   def edit
     @article = Article.find(params[:id])
     unless @article.access_by? current_user

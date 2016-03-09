@@ -466,4 +466,26 @@ class Article < Content
     to = to - 1 # pull off 1 second so we don't overlap onto the next day
     return from..to
   end
+  
+  def merge_with(id_two)
+    article_one = self
+    article_two = Article.find(id_two)
+    if article_two.nil?
+      flash[:notice] = "Invalid article ID #{id_two}"
+      return
+    end
+    new_article = Article.create
+    new_article.title = article_one.title
+    new_article.body = article_one.body + " " + article_two.body
+    new_article.author = article_one.author
+    new_article.published = true
+    new_article.set_published_at
+    new_article.state = "published"
+    Comment.where(article_id: article_one.id).find_each do |comm|
+      comm.article_id = new_article.id
+      comm.save
+    end
+    new_article.save
+    return new_article
+  end
 end
